@@ -4,7 +4,7 @@ const { MongoClient, ObjectId, ServerApiVersion } = require('mongodb');
 require('dotenv').config();
 const port = process.env.port || 5000
 const app = express();
-const jwt = require('jsonwebtoken');
+
 
 
 
@@ -32,3 +32,55 @@ const DBConnect = async () => {
 }
 
 DBConnect();
+const tasksCollection = client.db('TaskManager').collection('tasks');
+
+
+//------------------ alll get----------
+app.get('/my-tasks', async (req, res) => {
+    try {
+        const result = await tasksCollection.find({}).toArray();
+        res.send(result);
+    } catch (error) {
+        console.log(error.message);
+    }
+})
+
+//------------------ alll get----------
+
+
+
+
+
+//------------------ alll post----------
+app.post('/add', async (req, res) => {
+    try {
+        const taskInfo = req.body;
+        console.log(taskInfo);
+
+        const result = await tasksCollection.insertOne(taskInfo);
+        console.log(result);
+        res.send(result);
+    } catch (error) {
+        console.log(error.message);
+    }
+})
+
+//------------------ alll post----------
+
+
+
+
+
+// test server
+app.get("/", (req, res) => {
+    res.send({
+        success: true,
+        message: "Task manager app server is running.."
+    })
+})
+
+
+
+app.listen(port, () => {
+    console.log("server is running in ", port || 5000);
+})
