@@ -38,7 +38,9 @@ const tasksCollection = client.db('TaskManager').collection('tasks');
 //------------------ alll get----------
 app.get('/my-tasks', async (req, res) => {
     try {
-        const result = await tasksCollection.find({}).toArray();
+        const { email } = req.query;
+        console.log(email);
+        const result = await tasksCollection.find({ taskAuthor: email }).toArray();
         res.send(result);
     } catch (error) {
         console.log(error.message);
@@ -71,6 +73,21 @@ app.post('/add', async (req, res) => {
 
 
 
+
+app.delete("/my-tasks/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const query = { _id: ObjectId(id) }
+        const result = await tasksCollection.deleteOne(query);
+        res.send(result)
+    }
+    catch (error) {
+        console.log(error.message);
+    }
+})
+
+
+
 // test server
 app.get("/", (req, res) => {
     res.send({
@@ -84,3 +101,8 @@ app.get("/", (req, res) => {
 app.listen(port, () => {
     console.log("server is running in ", port || 5000);
 })
+
+
+
+
+
