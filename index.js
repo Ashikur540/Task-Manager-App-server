@@ -88,6 +88,38 @@ app.delete("/my-tasks/:id", async (req, res) => {
 
 
 
+app.patch("/my-tasks/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        console.log("task___________", req.body);
+        const query = { _id: ObjectId(id) }
+        const updateInfo = {
+            $set: req.body
+        }
+
+        const result = await tasksCollection.updateOne(query, updateInfo)
+        if (result.matchedCount) {
+            res.send({
+                success: true,
+                message: `Successfully updated`
+            })
+        }
+        else {
+            res.send({
+                success: false,
+                error: ` couldnot update `
+            })
+        }
+    } catch (error) {
+        res.send({
+            success: false,
+            error: error.message
+        })
+    }
+})
+
+
 // test server
 app.get("/", (req, res) => {
     res.send({
